@@ -1,0 +1,70 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Git commit message style & automated commit workflow
+alwaysApply: false   # Agent-requested: included only when a commit is about to happen
+---
+
+## Commit Message Format (Conventional Commits ++)
+
+<type>(<scope>): <Capitalised short summary – max 50 chars>
+
+<Body: blank line → wrap at 72 chars. Explain why and how.>
+
+Bullet points for important details
+
+Reference issues/PRs like #123
+
+<footer> BREAKING CHANGE: <explanation if applicable> Co-authored-by: Name <email> ```
+Allowed type values:
+feat | fix | docs | style | refactor | perf | test | chore | build | ci
+
+Guidelines
+
+Use imperative mood (“Add sleep summary”, not “Added”).
+
+One commit per cohesive change; avoid “misc fixes”.
+
+No trailing period in the summary line.
+
+Call out DB schema or API contract changes explicitly.
+
+If the change affects multiple languages, mention the locales touched.
+
+Automated Commit Procedure (Agent Checklist)
+Stage logically related files
+git add <file …>
+
+Verify
+
+pytest -q for backend
+
+npm test for frontend (if touched)
+Abort on any failure.
+
+Lint & format
+
+ruff --fix (Python)
+
+prettier --write "**/*.{ts,tsx,js,json,md}"
+
+Generate commit message following the format above, including:
+
+Modules affected (paths or package names).
+
+Before → after summary for refactors.
+
+Commit
+git commit -m "$MESSAGE"
+
+Push
+git push origin <current-branch>
+
+Open a pull request (if branch ≠ main) with the same title + body.
+
+When the user says “commit”, execute this full checklist (or output the exact commands to run if shell access isn’t available).
+
+@CHANGELOG.md

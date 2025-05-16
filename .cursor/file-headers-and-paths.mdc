@@ -1,0 +1,72 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Source-file path conventions + mandatory header docstrings/comments
+alwaysApply: true
+---
+
+## 1. File-path & naming conventions
+
+| Layer            | Root directory              | Naming rule             | Notes |
+|------------------|-----------------------------|-------------------------|-------|
+| Python runtime   | `backend/app/`              | `snake_case.py`         | Split modules ≤400 LOC |
+| Python tests     | `tests/backend/`            | `test_<module>.py`      | Mirror runtime path   |
+| Front-end React  | `frontend/src/`             | `PascalCase.tsx|ts`     | Components in `components/`, pages in `pages/` |
+| Data / fixtures  | `data/`                     | `snake_case.json|csv`   | Keep under 5 MB |
+| Docs / misc      | `docs/`                     | `kebab-case.md`         | Markdown only |
+
+*When you create or move a file, **respect these paths and file-name patterns**.  If a change breaks the rule, emit a TODO comment + a suggested fix.*
+
+---
+
+## 2. Mandatory header block
+
+Every source file **must start** with a short, structured comment that gives the AI instant context.
+
+### 2.1  Python example
+
+```python
+"""
+File: backend/app/services/whisper_client.py
+Description: Thin async wrapper around the OpenAI Whisper API for speech-to-text.
+AI-hints:
+- Exposes `async def transcribe_audio(path: Path) -> str`
+- Wraps blocking I/O in `run_in_threadpool`
+- Raises `WhisperError` on non-200 responses
+"""
+2.2 TypeScript / TSX example
+ts
+Copy
+Edit
+/**
+ * File: frontend/src/components/AudioRecorder.tsx
+ * Description: React component for recording audio via MediaRecorder.
+ * AI-hints:
+ * - Props: { isRecording: boolean; onStop(blob: Blob): void }
+ * - Uses Tailwind classes for layout
+ * - Accessible: adds aria-labels for buttons
+ */
+2.3 Rules for the header block
+Keep the first three lines exactly in the order shown: File, Description, AI-hints:
+
+Path is repo-root-relative (no leading ./).
+
+Description ≤ 80 chars, imperative mood.
+
+AI-hints is a bullet (or dash) list of the non-obvious facts the code won’t reveal at a glance—APIs hit, side-effects, constraints, etc.
+
+Update the File: line immediately if the file is renamed or moved (Git pre-commit hook may warn).
+
+3. Enforcement workflow (Agent behaviour)
+When generating or editing a file:
+
+Insert the header if absent, or update it if stale.
+
+Abort commit if header is missing or the path in the header mismatches the actual path.
+
+When summarising a diff or answering questions, preferentially read the header first.
+
+@backend/app/init.py

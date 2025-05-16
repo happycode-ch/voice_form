@@ -1,0 +1,63 @@
+.audio-recorder {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.audio-visualizer {
+  width: 40px;
+  height: 60px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  margin-right: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.audio-level {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #4d9bf0;
+  transition: height 0.1s ease-in-out;
+}
+
+.recording-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.recording-time {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.recording-status {
+  font-size: 0.9rem;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+}
+
+.recording-indicator {
+  color: #dc3545;
+  font-size: 1.2rem;
+  margin-right: 8px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+} 

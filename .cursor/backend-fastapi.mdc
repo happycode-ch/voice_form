@@ -1,0 +1,36 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Backend conventions for FastAPI services
+globs:
+  - backend/**          # applies to all backend files
+alwaysApply: false
+---
+
+### Routing
+
+- Group related endpoints under `/api/{feature}` (e.g. `/api/transcribe`).  
+- Use **async** def for every route handler.  
+- Add `response_model` Pydantic schemas for typed outputs.
+
+### Services pattern
+
+backend/app/services/
+└── whisper_client.py
+└── openai_client.py
+
+markdown
+Copy
+Edit
+- Keep external-API calls isolated here.  
+- Wrap blocking I/O with `run_in_threadpool`.
+
+### Error handling
+
+- Raise `HTTPException` with explicit status codes.  
+- Convert model/validation errors to 422 responses.
+
+@backend/app/api/routes.py

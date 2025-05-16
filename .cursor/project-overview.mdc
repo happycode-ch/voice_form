@@ -1,0 +1,27 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: VoiceForm AI – high-level project guidance
+alwaysApply: true
+---
+
+**Project purpose**
+
+- Build a *voice-first, multilingual intake* POC (sleep-clinic scenario → extensible):contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+- Emphasise clarity, modularity, and résumé-ready code over production feature-depth.
+
+**Tech stack (never deviate without a TODO comment)**  
+Backend FastAPI · Frontend React/TS · Whisper for transcription · GPT for summarisation · PostgreSQL · Docker · pytest.:contentReference[oaicite:2]{index=2}:contentReference[oaicite:3]{index=3}
+
+**Expectations**
+
+1. **Keep it simple** – prefer stubs / placeholders over full integrations.  
+2. **Comment key decisions** – why, not just what.  
+3. **Update `CHANGELOG.md`** after every session.  
+4. **Suggest next steps** in commit messages or pull-request descriptions.  
+5. **Mark compliance items** with `# TODO: PRODUCTION COMPLIANCE`.
+
+@README.md
