@@ -1,6 +1,8 @@
 import os
 import tempfile
 import httpx
+import io
+import openai
 from typing import Optional, Dict, Any
 import base64
 import logging
@@ -11,6 +13,8 @@ load_dotenv()
 
 # Get API key from environment
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# Set OpenAI API key
+openai.api_key = OPENAI_API_KEY
 USE_MOCK = os.getenv("USE_MOCK_TRANSCRIPTION", "False").lower() == "true"
 
 logger = logging.getLogger(__name__)
@@ -35,56 +39,26 @@ async def transcribe_audio(audio_data: bytes, language: Optional[str] = None) ->
     if not OPENAI_API_KEY:
         raise ValueError("OpenAI API key is required for transcription")
     
-    # Create a temporary file for the audio data
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
-        temp_audio.write(audio_data)
-        temp_audio_path = temp_audio.name
-    
     try:
-        # Prepare API request
-        headers = {
-            "Authorization": f"Bearer {OPENAI_API_KEY}"
-        }
+        # Create BytesIO object from audio data
+        audio_file = io.BytesIO(audio_data)
+        audio_file.name = "audio.wav"  # Set a name for the file
         
-        # Prepare form data with optional language parameter
-        form_data = {
+        # Prepare API call parameters
+        params = {
             "model": "whisper-1",
-            "response_format": "text"
+            "file": audio_file
         }
         
         if language:
-            form_data["language"] = language
+            params["language"] = language
         
-        # Open the temporary file for API upload
-        files = {
-            "file": ("audio.wav", open(temp_audio_path, "rb"), "audio/wav")
-        }
+        # Call the OpenAI API
+        response = openai.audio.transcriptions.create(**params)
         
-        # Make API request
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                "https://api.openai.com/v1/audio/transcriptions",
-                headers=headers,
-                data=form_data,
-                files=files,
-                timeout=30.0  # Longer timeout for audio processing
-            )
-            
-            # Check for success and return transcription
-            if response.status_code == 200:
-                # For text response format, the response is just the text
-                return response.text.strip()
-            else:
-                # Handle API error
-                error_detail = response.json().get("error", {}).get("message", "Unknown error")
-                logger.error(f"Transcription API error: {error_detail}")
-                raise Exception(f"Transcription failed: {error_detail}")
+        # Return the transcribed text
+        return response.text
                 
     except Exception as e:
-        logger.exception("Error in transcription service")
-        raise
-        
-    finally:
-        # Clean up the temporary file
-        if os.path.exists(temp_audio_path):
-            os.unlink(temp_audio_path) 
+        logger.exception(f"Error in transcription service: {str(e)}")
+        raise 

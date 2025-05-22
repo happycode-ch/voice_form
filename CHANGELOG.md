@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Implement Postgres-backed transcription repository with Alembic migrations #minor
+- Create `transcriptions` table for persistent storage of voice input #minor
+- Replace mock transcription with live OpenAI Whisper API integration #minor
+
 ### Fixed
 - Remove trailing-slash redirect loop that caused questionnaire to reload on new ports and lose state.
 
