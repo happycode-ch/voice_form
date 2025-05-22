@@ -5,8 +5,9 @@ WORKDIR /app
 # Copy package files
 COPY package.json ./
 
-# Install dependencies
-RUN npm install
+# Clean install dependencies
+RUN npm cache clean --force && \
+    npm install
 
 # Copy application code
 COPY . .
@@ -20,8 +21,8 @@ FROM nginx:alpine
 # Copy build output from previous stage
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Copy custom Nginx config if needed
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
 EXPOSE 80

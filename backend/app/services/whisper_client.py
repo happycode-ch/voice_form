@@ -31,6 +31,7 @@ async def transcribe_audio(audio_data: bytes, language: Optional[str] = None) ->
         logger.info("Using mock transcription service")
         return "This is a mock transcription for development purposes."
     
+    # Check for API key only if not in mock mode
     if not OPENAI_API_KEY:
         raise ValueError("OpenAI API key is required for transcription")
     

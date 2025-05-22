@@ -81,17 +81,29 @@ const App: React.FC = () => {
       formData.append('session_id', sessionId);
       formData.append('language', language);
       
-      // Make request to transcription API
-      const transcriptionResponse = await fetch('/api/transcribe', {
+      // Make request to transcription API with redirect handling
+      const transcriptionResponse = await fetch('/api/transcribe/', {  // Note the trailing slash
         method: 'POST',
         body: formData,
+        redirect: 'follow',  // Explicitly follow redirects
       });
       
       if (!transcriptionResponse.ok) {
-        throw new Error('Transcription failed');
+        const errorData = await transcriptionResponse.json().catch(() => ({ 
+          detail: `Request failed with status ${transcriptionResponse.status}` 
+        }));
+        console.error('Transcription failed:', errorData);
+        throw new Error(`Transcription failed: ${errorData.detail || transcriptionResponse.statusText}`);
       }
       
-      const transcriptionData = await transcriptionResponse.json();
+      const transcriptionData = await transcriptionResponse.json().catch(() => {
+        throw new Error('Failed to parse transcription response');
+      });
+      
+      if (!transcriptionData.transcription) {
+        throw new Error('No transcription received from server');
+      }
+      
       const { transcription } = transcriptionData;
       
       // Get current question
@@ -107,19 +119,26 @@ const App: React.FC = () => {
       };
       
       // Make request to summarization API
-      const summaryResponse = await fetch('/api/summarize', {
+      const summaryResponse = await fetch('/api/summarize/', {  // Note the trailing slash
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(summarizePayload),
+        redirect: 'follow',  // Explicitly follow redirects
       });
       
       if (!summaryResponse.ok) {
-        throw new Error('Summarization failed');
+        const errorData = await summaryResponse.json().catch(() => ({ 
+          detail: `Request failed with status ${summaryResponse.status}` 
+        }));
+        console.error('Summarization failed:', errorData);
+        throw new Error(`Summarization failed: ${errorData.detail || summaryResponse.statusText}`);
       }
       
-      const summaryData = await summaryResponse.json();
+      const summaryData = await summaryResponse.json().catch(() => {
+        throw new Error('Failed to parse summary response');
+      });
       
       // Store response
       const newResponse: Response = {
@@ -139,11 +158,15 @@ const App: React.FC = () => {
         await handleCompleteSurvey();
       }
       
-    } catch (error) {
+    } catch (err: unknown) {
+      const error = err as Error;
       console.error('Error processing recording:', error);
-      // Show error to user
+      alert(language === 'en' 
+        ? `Error: ${error.message}. Please try again.` 
+        : `Fehler: ${error.message}. Bitte versuchen Sie es erneut.`);
     } finally {
       setIsProcessing(false);
+      setIsRecording(false);  // Ensure recording state is reset
     }
   };
 

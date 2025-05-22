@@ -57,4 +57,7 @@ uploads/
 
 # Build outputs
 frontend/build/
-backend/dist/ 
+backend/dist/
+
+# IDE settings
+.cursor/ 

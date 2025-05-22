@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Remove trailing-slash redirect loop that caused questionnaire to reload on new ports and lose state.
+
+### Added
+- Prompt templates for Runtime Watchdog and Live Debugger (docs only).
+
 ## [0.1.2] - 2024-05-22
 
 ### Added
