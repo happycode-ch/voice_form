@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - OpenAI API verification endpoint (/api/health/openai)
 - Add container-aware database connection retry logic #minor
 - Add container-specific documentation and setup guide #patch
+- Add Ruff code linting and formatting to container workflow #minor
 
 ### Changed
 - Replace mock transcription with configurable OpenAI Whisper integration #minor
@@ -27,11 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance application startup with container dependency checking #minor
 - Modernize service clients to use centralized configuration #minor
 - Update database session management for containerized environment #minor
+- Apply consistent code formatting across all Python files #patch
 
 ### Fixed
 - Fix trailing-slash redirect loop in questionnaire navigation #patch
 - Fix content-type validation for audio file uploads #patch
 - Fix SQLAlchemy syntax for modern versions in health checks #patch
+- Fix file ownership issues with Docker volume mounts #patch
 
 ## [0.1.2] - 2024-05-22
 
