@@ -1,3 +1,11 @@
+"""
+File: backend/app/repositories/transcription_repository.py
+Description: Database operations for transcription data persistence.
+AI-hints:
+- Exposes create(question_id, text) -> Transcription
+- Handles SQLAlchemy session lifecycle with commit/refresh
+- Returns persisted object with auto-generated ID
+"""
 from sqlalchemy.orm import Session
 from app.models.transcription import Transcription
 

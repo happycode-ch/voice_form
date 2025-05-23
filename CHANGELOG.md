@@ -5,18 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!-- CHANGELOG_STANDARD_VERSION: 1 -->
+
 ## [Unreleased]
 
 ### Added
-- Implement Postgres-backed transcription repository with Alembic migrations #minor
-- Create `transcriptions` table for persistent storage of voice input #minor
-- Replace mock transcription with live OpenAI Whisper API integration #minor
+- Add Postgres-backed transcription storage with Alembic migrations #minor
+- Add TranscriptionRepository for database operations #minor
+- Add end-to-end testing guide for transcription integration #patch
+
+### Changed
+- Replace mock transcription with configurable OpenAI Whisper integration #minor
+- Update Pydantic schema to use from_attributes instead of deprecated orm_mode #patch
 
 ### Fixed
-- Remove trailing-slash redirect loop that caused questionnaire to reload on new ports and lose state.
-
-### Added
-- Prompt templates for Runtime Watchdog and Live Debugger (docs only).
+- Fix trailing-slash redirect loop in questionnaire navigation #patch
+- Fix content-type validation for audio file uploads #patch
 
 ## [0.1.2] - 2024-05-22
 
@@ -40,20 +44,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.1] - 2024-05-16
 
 ### Added
-
 - Python virtual environment setup
 - Project-specific Python version (3.11.8) via pyenv
 - Activation script (activate.sh) for easier environment management
 
 ### Changed
-
 - Updated Python version from 3.13.3 to 3.11.8 for better package compatibility
 - Fixed dependency installation issues with pydantic-core
 
 ## [0.1.0] - 2023-12-05
 
 ### Added
-
 - Initial project scaffolding
 - Backend API structure with FastAPI
   - Transcription endpoint
@@ -72,7 +73,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CHANGELOG
 
 ### Todo
-
 - Add tests for backend APIs
 - Implement authentication and authorization
 - Add PDF export functionality
