@@ -13,14 +13,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Postgres-backed transcription storage with Alembic migrations #minor
 - Add TranscriptionRepository for database operations #minor
 - Add end-to-end testing guide for transcription integration #patch
+- Add centralized configuration system with environment validation #minor
+- Add comprehensive health check system for container monitoring #minor
+  - Basic health endpoint (/api/health/)
+  - Detailed system status endpoint (/api/health/detailed)
+  - OpenAI API verification endpoint (/api/health/openai)
+- Add container-aware database connection retry logic #minor
+- Add container-specific documentation and setup guide #patch
 
 ### Changed
 - Replace mock transcription with configurable OpenAI Whisper integration #minor
 - Update Pydantic schema to use from_attributes instead of deprecated orm_mode #patch
+- Enhance application startup with container dependency checking #minor
+- Modernize service clients to use centralized configuration #minor
+- Update database session management for containerized environment #minor
 
 ### Fixed
 - Fix trailing-slash redirect loop in questionnaire navigation #patch
 - Fix content-type validation for audio file uploads #patch
+- Fix SQLAlchemy syntax for modern versions in health checks #patch
 
 ## [0.1.2] - 2024-05-22
 
