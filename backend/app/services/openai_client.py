@@ -1,19 +1,23 @@
-import os
+"""
+File: backend/app/services/openai_client.py
+Description: OpenAI GPT client for text summarization and analysis.
+AI-hints:
+- Exposes `async def summarize_text()` for response analysis
+- Uses centralized configuration for API key and mock mode
+- Returns structured analysis based on question type
+- Handles rate limiting and API errors gracefully
+"""
 import json
 from typing import Dict, Any, Tuple, Optional
 import httpx
 import logging
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
-# Get API key from environment
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
-USE_MOCK = os.getenv("USE_MOCK_SUMMARIZATION", "False").lower() == "true"
+from app.config import config
 
 logger = logging.getLogger(__name__)
+
+class OpenAIError(Exception):
+    """Raised when OpenAI API call fails."""
+    pass
 
 async def summarize_text(
     text: str, 
@@ -34,9 +38,12 @@ async def summarize_text(
         Tuple containing:
         - summary: A concise summary of the response
         - analysis: Structured analysis of the response
+        
+    Raises:
+        OpenAIError: If summarization fails
     """
     # Use mock summarization for development/testing if configured
-    if USE_MOCK:
+    if config.use_mock_summarization:
         logger.info("Using mock summarization service")
         summary = "This is a mock summary for development purposes."
         analysis = {
@@ -45,10 +52,10 @@ async def summarize_text(
             "confidence": 0.85
         }
         return summary, analysis
-    
-    if not OPENAI_API_KEY:
-        raise ValueError("OpenAI API key is required for summarization")
-    
+
+    if not config.openai_api_key:
+        raise OpenAIError("OpenAI API key is required for summarization")
+
     # Build prompt based on question type
     system_prompt = _build_system_prompt(question_type, language)
     
@@ -62,12 +69,12 @@ Analyze the response according to the instructions.
     
     # Prepare API request
     headers = {
-        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Authorization": f"Bearer {config.openai_api_key}",
         "Content-Type": "application/json"
     }
     
     payload = {
-        "model": OPENAI_MODEL,
+        "model": config.openai_model,
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message}
@@ -78,12 +85,14 @@ Analyze the response according to the instructions.
     
     # Make API request
     try:
+        logger.info(f"Calling OpenAI API with model: {config.openai_model}")
+        
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 "https://api.openai.com/v1/chat/completions",
                 headers=headers,
                 json=payload,
-                timeout=30.0
+                timeout=config.request_timeout_seconds
             )
             
             # Check for success and parse response
@@ -98,16 +107,23 @@ Analyze the response according to the instructions.
                 summary = result.get("summary", "")
                 analysis = result.get("analysis", {})
                 
+                logger.info(f"Summarization successful, summary length: {len(summary)} characters")
                 return summary, analysis
             else:
                 # Handle API error
                 error_detail = response.json().get("error", {}).get("message", "Unknown error")
-                logger.error(f"Summarization API error: {error_detail}")
-                raise Exception(f"Summarization failed: {error_detail}")
+                logger.error(f"OpenAI API error (status {response.status_code}): {error_detail}")
+                raise OpenAIError(f"API request failed: {error_detail}")
                 
+    except httpx.TimeoutException:
+        logger.error("OpenAI API request timed out")
+        raise OpenAIError("Request timed out")
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse OpenAI response as JSON: {e}")
+        raise OpenAIError("Invalid response format from API")
     except Exception as e:
-        logger.exception("Error in summarization service")
-        raise
+        logger.exception("Unexpected error in summarization service")
+        raise OpenAIError(f"Summarization failed: {str(e)}")
 
 def _build_system_prompt(question_type: str, language: str) -> str:
     """Build the system prompt based on question type and language."""
