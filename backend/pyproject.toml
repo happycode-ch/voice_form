@@ -1,0 +1,42 @@
+[tool.ruff]
+# Exclude alembic directory from linting (contains auto-generated migration code)
+exclude = [
+    "alembic/",
+    "node_modules/",
+    ".git/",
+    "__pycache__/",
+    ".pytest_cache/",
+]
+
+# Enable common rules
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings  
+    "F",   # pyflakes
+    "I",   # isort
+    "C4",  # flake8-comprehensions
+    "B",   # flake8-bugbear
+]
+
+# Ignore FastAPI-specific patterns and other acceptable patterns
+ignore = [
+    "B008",  # FastAPI dependency injection in function defaults is acceptable
+    "B904",  # Exception chaining - not critical for this project
+]
+
+# Set more reasonable line length for FastAPI projects
+line-length = 100
+
+# Target Python 3.11
+target-version = "py311"
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+
+# Indent with 4 spaces
+indent-style = "space"
+
+[tool.ruff.lint.isort]
+# Known first-party modules
+known-first-party = ["app"] 

@@ -7,11 +7,12 @@ AI-hints:
 - Health endpoints provide system status and API verification
 """
 from fastapi import APIRouter
-from app.api import transcribe, summarize, health
+
+from app.api import health, summarize, transcribe
 
 router = APIRouter()
 
 # Include sub-routers with prefixes for clean API organization
 router.include_router(transcribe.router, prefix="/transcribe", tags=["transcription"])
 router.include_router(summarize.router, prefix="/summarize", tags=["summarization"])
-router.include_router(health.router, prefix="/health", tags=["health"]) 
+router.include_router(health.router, prefix="/health", tags=["health"])
