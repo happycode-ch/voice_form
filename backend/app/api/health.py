@@ -54,9 +54,7 @@ async def detailed_health_check(db: Session = Depends(get_db)):
     }
 
     # Determine overall status
-    component_statuses = [
-        comp["status"] for comp in health_status["components"].values()
-    ]
+    component_statuses = [comp["status"] for comp in health_status["components"].values()]
     if "unhealthy" in component_statuses:
         health_status["status"] = "unhealthy"
     elif "degraded" in component_statuses:
@@ -114,9 +112,7 @@ async def verify_openai_api():
 
             if response.status_code == 200:
                 models_data = response.json()
-                available_models = [
-                    model["id"] for model in models_data.get("data", [])
-                ]
+                available_models = [model["id"] for model in models_data.get("data", [])]
 
                 return {
                     "status": "healthy",
@@ -126,9 +122,7 @@ async def verify_openai_api():
                     "total_models": len(available_models),
                 }
             else:
-                error_detail = (
-                    response.json().get("error", {}).get("message", "Unknown error")
-                )
+                error_detail = response.json().get("error", {}).get("message", "Unknown error")
                 raise HTTPException(
                     status_code=424,
                     detail=f"OpenAI API verification failed: {error_detail}",
@@ -138,9 +132,7 @@ async def verify_openai_api():
         raise HTTPException(status_code=424, detail="OpenAI API verification timed out")
     except Exception as e:
         logger.exception("Error verifying OpenAI API")
-        raise HTTPException(
-            status_code=424, detail=f"OpenAI API verification failed: {str(e)}"
-        )
+        raise HTTPException(status_code=424, detail=f"OpenAI API verification failed: {str(e)}")
 
 
 async def _check_database_health(db: Session) -> Dict[str, Any]:

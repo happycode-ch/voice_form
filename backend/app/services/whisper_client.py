@@ -71,9 +71,7 @@ async def transcribe_audio(audio_data: bytes, language: Optional[str] = None) ->
         response = openai.audio.transcriptions.create(**params)
 
         # Return the transcribed text
-        logger.info(
-            f"Transcription successful, text length: {len(response.text)} characters"
-        )
+        logger.info(f"Transcription successful, text length: {len(response.text)} characters")
         return response.text
 
     except openai.OpenAIError as e:

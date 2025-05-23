@@ -65,9 +65,7 @@ async def wait_for_dependencies():
                     if response.status_code == 200:
                         logger.info("✅ OpenAI API accessible")
                     else:
-                        logger.warning(
-                            f"⚠️ OpenAI API responded with status {response.status_code}"
-                        )
+                        logger.warning(f"⚠️ OpenAI API responded with status {response.status_code}")
             except Exception as e:
                 logger.warning(f"⚠️ OpenAI API check failed: {e}")
 
@@ -94,9 +92,7 @@ async def lifespan(app: FastAPI):
 
         # Log container-specific information
         db_location = (
-            config.database_url.split("@")[-1]
-            if "@" in config.database_url
-            else "configured"
+            config.database_url.split("@")[-1] if "@" in config.database_url else "configured"
         )
         logger.info(f"🔗 Container networking: Database at {db_location}")
 

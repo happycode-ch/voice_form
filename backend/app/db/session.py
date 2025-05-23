@@ -70,12 +70,8 @@ def wait_for_database(engine, max_retries: int = None, retry_delay: int = None):
                 logger.info(f"Retrying in {retry_delay} seconds...")
                 time.sleep(retry_delay)
             else:
-                logger.error(
-                    f"❌ Database connection failed after {max_retries} attempts"
-                )
-                raise Exception(
-                    f"Could not connect to database after {max_retries} attempts: {e}"
-                )
+                logger.error(f"❌ Database connection failed after {max_retries} attempts")
+                raise Exception(f"Could not connect to database after {max_retries} attempts: {e}")
 
 
 # Create SQLAlchemy engine using centralized configuration

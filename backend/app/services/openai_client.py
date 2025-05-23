@@ -112,18 +112,12 @@ Analyze the response according to the instructions.
                 summary = result.get("summary", "")
                 analysis = result.get("analysis", {})
 
-                logger.info(
-                    f"Summarization successful, summary length: {len(summary)} characters"
-                )
+                logger.info(f"Summarization successful, summary length: {len(summary)} characters")
                 return summary, analysis
             else:
                 # Handle API error
-                error_detail = (
-                    response.json().get("error", {}).get("message", "Unknown error")
-                )
-                logger.error(
-                    f"OpenAI API error (status {response.status_code}): {error_detail}"
-                )
+                error_detail = response.json().get("error", {}).get("message", "Unknown error")
+                logger.error(f"OpenAI API error (status {response.status_code}): {error_detail}")
                 raise OpenAIError(f"API request failed: {error_detail}")
 
     except httpx.TimeoutException:

@@ -35,9 +35,7 @@ class Config:
     # Database Configuration
     @property
     def database_url(self) -> str:
-        return os.getenv(
-            "DATABASE_URL", "postgresql://postgres:postgres@db:5432/voiceform"
-        )
+        return os.getenv("DATABASE_URL", "postgresql://postgres:postgres@db:5432/voiceform")
 
     @property
     def database_connection_retries(self) -> int:
@@ -120,9 +118,7 @@ class Config:
                         "OPENAI_API_KEY is required in production when mock mode is disabled"
                     )
                 else:
-                    warnings.append(
-                        "OPENAI_API_KEY is missing - falling back to mock mode"
-                    )
+                    warnings.append("OPENAI_API_KEY is missing - falling back to mock mode")
                     # Auto-enable mock mode if no API key in development
                     os.environ["USE_MOCK_TRANSCRIPTION"] = "true"
                     os.environ["USE_MOCK_SUMMARIZATION"] = "true"
@@ -130,9 +126,7 @@ class Config:
                 if self.environment == "production":
                     errors.append("Please set a real OPENAI_API_KEY in production")
                 else:
-                    warnings.append(
-                        "Using placeholder API key - falling back to mock mode"
-                    )
+                    warnings.append("Using placeholder API key - falling back to mock mode")
                     os.environ["USE_MOCK_TRANSCRIPTION"] = "true"
                     os.environ["USE_MOCK_SUMMARIZATION"] = "true"
 
@@ -183,17 +177,11 @@ class Config:
         # Container-specific settings
         logger.info(f"DB connection retries: {self.database_connection_retries}")
         logger.info(f"DB retry delay: {self.database_retry_delay_seconds}s")
-        logger.info(
-            f"Container startup timeout: {self.container_startup_timeout_seconds}s"
-        )
+        logger.info(f"Container startup timeout: {self.container_startup_timeout_seconds}s")
 
         # Only log API key status, not the actual key
         if self.openai_api_key:
-            key_preview = (
-                self.openai_api_key[:8] + "..."
-                if len(self.openai_api_key) > 8
-                else "***"
-            )
+            key_preview = self.openai_api_key[:8] + "..." if len(self.openai_api_key) > 8 else "***"
             logger.info(f"OpenAI API key: {key_preview}")
         else:
             logger.info("OpenAI API key: Not configured")

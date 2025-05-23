@@ -69,9 +69,7 @@ class Session(Base):
 
     # Relationships
     questionnaire = relationship("Questionnaire", back_populates="sessions")
-    responses = relationship(
-        "Response", back_populates="session", cascade="all, delete-orphan"
-    )
+    responses = relationship("Response", back_populates="session", cascade="all, delete-orphan")
 
 
 class Response(Base):

@@ -46,9 +46,7 @@ async def summarize_response(data: SummarizeRequest, db: Session = Depends(get_d
 
         # TODO: Store summary in database if session_id is provided
 
-        return SummarizeResponse(
-            summary=summary, analysis=analysis, question_id=data.session_id
-        )
+        return SummarizeResponse(summary=summary, analysis=analysis, question_id=data.session_id)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Summarization failed: {str(e)}")
@@ -86,6 +84,4 @@ async def batch_summarize(
         return {"results": results}
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Batch summarization failed: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Batch summarization failed: {str(e)}")
